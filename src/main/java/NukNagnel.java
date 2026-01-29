@@ -39,6 +39,7 @@ public class NukNagnel {
         do {
             System.out.print(" > ");
             userInput = scanner.nextLine();
+            if (userInput.equals("bye")) break;
             printHoriLine();
             Scanner userInputScanner = new Scanner(userInput);
             Task item;
