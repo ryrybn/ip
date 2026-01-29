@@ -7,6 +7,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 I have added the task as requested:
 [T][ ]  borrow book
+
 Now you have 1 tasks stored in the list.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,6 +15,7 @@ Now you have 1 tasks stored in the list.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 I have added the task as requested:
 [D][ ]  return book (by: Sunday)
+
 Now you have 2 tasks stored in the list.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,6 +23,7 @@ Now you have 2 tasks stored in the list.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 I have added the task as requested:
 [E][ ]  project meeting (from: Mon 2pm to: 4pm)
+
 Now you have 3 tasks stored in the list.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,10 +57,16 @@ Alright, I have marked this task as *not done yet*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  >
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The task has been successfully removed.
+[E][X]  project meeting (from: Mon 2pm to: 4pm)
+Now you have 2 tasks stored in the list.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ >
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Below are the tasks stored in your list:
 1. [T][ ]  borrow book
 2. [D][X]  return book (by: Sunday)
-3. [E][X]  project meeting (from: Mon 2pm to: 4pm)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  >  This conversation has ended.

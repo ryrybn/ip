@@ -6,5 +6,6 @@ list
 mark 2
 mark 3
 unmark 1
+delete 3
 list
 bye
