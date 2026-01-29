@@ -6,11 +6,13 @@ public class NukNagnel {
 
     // Sample data to test functionality
 //    private void samplePopulate() {
-//        items[0] = new Task("read book");
+//        items[0] = new ToDo("read book");
 //        items[0].markAsDone();
-//        items[1] = new Task("return book");
-//        items[2] = new Task("buy bread");
-//        itemsPtr = 3;
+//        items[1] = new Deadline("return book", "June 6th");
+//        items[2] = new Event("project meeting", "Aug 6th 2pm", "4pm");
+//        items[3] = new ToDo("joins sports club");
+//        items[3].markAsDone();
+//        itemsPtr = 4;
 //    }
 
     private void printHoriLine() {
@@ -40,7 +42,8 @@ public class NukNagnel {
             printHoriLine();
             Scanner userInputScanner = new Scanner(userInput);
             Task item;
-            switch(userInputScanner.next()) {
+            String command = userInputScanner.next();
+            switch(command) {
                 case "list":
                     printItemsList();
                     break;
@@ -57,7 +60,7 @@ public class NukNagnel {
                     System.out.print(item);
                     break;
                 default:
-                    storeItem(userInput);
+                    storeItem(command, userInputScanner.nextLine());
             }
             printHoriLine();
         } while (!userInput.equals("bye"));
@@ -73,10 +76,27 @@ public class NukNagnel {
         }
     }
 
-    private void storeItem(String item) {
-        items[itemsPtr] = new Task(item);
-        itemsPtr++;
-        System.out.println("added: " + item);
+    private void storeItem(String type, String item) {
+        String[] cmd;
+        switch (type) {
+            case "todo":
+                items[itemsPtr] = new ToDo(item);
+                break;
+            case "deadline":
+                cmd = item.split("/by ");
+                items[itemsPtr] = new Deadline(cmd[0].stripTrailing(), cmd[1]);
+                break;
+            case "event":
+                cmd = item.split("/from ");
+                String desc = cmd[0].stripTrailing();;
+                cmd = cmd[1].split(" /to ");
+                String from = cmd[0];
+                String to = cmd[1];
+                items[itemsPtr] = new Event(desc, from, to);
+                break;
+        }
+        System.out.println("I have added the task as requested:\n" + items[itemsPtr]);
+        System.out.println("Now you have " + String.valueOf(++itemsPtr) + " tasks stored in the list.");
     }
 
     public static void main(String[] args) {
