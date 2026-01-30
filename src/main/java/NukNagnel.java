@@ -40,39 +40,50 @@ public class NukNagnel {
         Scanner scanner = new Scanner(System.in);
         String userInput = "";
         do {
-            System.out.print(" > ");
-            userInput = scanner.nextLine();
-            if (userInput.equals("bye")) break;
-            printHoriLine();
-            Scanner userInputScanner = new Scanner(userInput);
-            Task item;
-            String command = userInputScanner.next();
-            switch(command) {
-                case "list":
-                    printItemsList();
-                    break;
-                case "mark":
-                    item = items.get(userInputScanner.nextInt()-1);
-                    item.markAsDone();
-                    System.out.println("Awesome! The task below has been marked as *done*:");
-                    System.out.print(item);
-                    break;
-                case "unmark":
-                    item = items.get(userInputScanner.nextInt()-1);
-                    item.markAsUndone();
-                    System.out.println("Alright, I have marked this task as *not done yet*");
-                    System.out.print(item);
-                    break;
-                case "delete":
-                    int id = userInputScanner.nextInt()-1;
-                    item = items.get(id);
-                    items.remove(id);
-                    System.out.println("The task has been successfully removed.");
-                    System.out.print(item);
-                    printNoOfItems(items);
-                    break;
-                default:
-                    storeItem(command, userInputScanner.nextLine());
+            try {
+                System.out.print(" > ");
+                userInput = scanner.nextLine();
+                if (userInput.equals("bye")) break;
+                printHoriLine();
+                Scanner userInputScanner = new Scanner(userInput);
+                Task item;
+                String command = userInputScanner.next();
+                switch(command) {
+                    case "list":
+                        printItemsList();
+                        break;
+                    case "mark":
+                        item = items.get(userInputScanner.nextInt() - 1);
+                        item.markAsDone();
+                        System.out.println("Awesome! The task below has been marked as *done*:");
+                        System.out.print(item);
+                        break;
+                    case "unmark":
+                        item = items.get(userInputScanner.nextInt() - 1);
+                        item.markAsUndone();
+                        System.out.println("Alright, I have marked this task as *not done yet*");
+                        System.out.print(item);
+                        break;
+                    case "delete":
+                        int id = userInputScanner.nextInt() - 1;
+                        item = items.get(id);
+                        items.remove(id);
+                        System.out.println("The task has been successfully removed.");
+                        System.out.print(item);
+                        printNoOfItems(items);
+                        break;
+                    case "todo":
+                    case "deadline":
+                    case "event":
+                        storeItem(command, userInputScanner.nextLine());
+                        break;
+                    default:
+                        throw new InvalidInputException();
+                }
+            } catch (InvalidInputException e) {
+                System.err.println(e.getMessage());
+            } catch (NoSuchElementException e) {
+                System.err.println("Please input the required parameters for your command.");
             }
             printHoriLine();
         } while (!userInput.equals("bye"));
