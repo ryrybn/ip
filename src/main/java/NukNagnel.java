@@ -2,6 +2,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -122,7 +126,7 @@ public class NukNagnel {
                     throw new InvalidInputException("Deadline tasks must include /by <date>.");
                 }
                 cmd = item.split("/by ", 2);
-                task = new Deadline(cmd[0].stripTrailing(), cmd[1]);
+                task = new Deadline(cmd[0].stripTrailing(), parseDate(cmd[1].trim()));
                 break;
             case "event":
                 if (!item.contains("/from ") || !item.contains(" /to ")) {
@@ -131,9 +135,9 @@ public class NukNagnel {
                 cmd = item.split("/from ", 2);
                 String desc = cmd[0].stripTrailing();;
                 cmd = cmd[1].split(" /to ", 2);
-                String from = cmd[0];
-                String to = cmd[1];
-                task = new Event(desc, from, to);
+                String from = cmd[0].trim();
+                String to = cmd[1].trim();
+                task = new Event(desc, parseDateTime(from), parseDateTime(to));
                 break;
         }
         items.add(task);
@@ -185,13 +189,21 @@ public class NukNagnel {
                 if (parts.length != 4) {
                     return null;
                 }
-                task = new Deadline(description, parts[3]);
+                try {
+                    task = new Deadline(description, parseDate(parts[3]));
+                } catch (InvalidInputException e) {
+                    return null;
+                }
                 break;
             case "E":
                 if (parts.length != 5) {
                     return null;
                 }
-                task = new Event(description, parts[3], parts[4]);
+                try {
+                    task = new Event(description, parseDateTime(parts[3]), parseDateTime(parts[4]));
+                } catch (InvalidInputException e) {
+                    return null;
+                }
                 break;
             default:
                 return null;
@@ -202,6 +214,34 @@ public class NukNagnel {
             return null;
         }
         return task;
+    }
+
+    private LocalDate parseDate(String raw) {
+        try {
+            return LocalDate.parse(raw);
+        } catch (DateTimeParseException e) {
+            throw new InvalidInputException("Please use yyyy-mm-dd for dates.");
+        }
+    }
+
+    private LocalDateTime parseDateTime(String raw) {
+        try {
+            return LocalDateTime.parse(raw);
+        } catch (DateTimeParseException e) {
+            // fall through to custom formats
+        }
+        DateTimeFormatter[] formats = new DateTimeFormatter[] {
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        };
+        for (DateTimeFormatter format : formats) {
+            try {
+                return LocalDateTime.parse(raw, format);
+            } catch (DateTimeParseException e) {
+                // try next format
+            }
+        }
+        throw new InvalidInputException("Please use yyyy-mm-dd HHmm or yyyy-mm-dd HH:mm for date-time.");
     }
 
     private void saveToDisk() {
@@ -224,11 +264,12 @@ public class NukNagnel {
         }
         if (task instanceof Deadline) {
             Deadline deadline = (Deadline) task;
-            return String.join(" | ", "D", status, task.getDescription(), deadline.by);
+            return String.join(" | ", "D", status, task.getDescription(), deadline.getBy().toString());
         }
         if (task instanceof Event) {
             Event event = (Event) task;
-            return String.join(" | ", "E", status, task.getDescription(), event.from, event.to);
+            return String.join(" | ", "E", status, task.getDescription(),
+                    event.getFrom().toString(), event.getTo().toString());
         }
         return String.join(" | ", "T", status, task.getDescription());
     }
