@@ -1,48 +1,59 @@
 package nuknagnel;
 
 public class ParsedCommand {
-    public enum Type {
-        LIST,
-        MARK,
-        UNMARK,
-        DELETE,
-        TODO,
-        DEADLINE,
-        EVENT,
-        BYE
-    }
+  public enum Type {
+    LIST,
+    MARK,
+    UNMARK,
+    DELETE,
+    TODO,
+    DEADLINE,
+    EVENT,
+    FIND,
+    BYE
+  }
 
-    private final Type type;
-    private final int index;
-    private final Task task;
+  private final Type type;
+  private final int index;
+  private final Task task;
+  private final String keyword;
 
-    public ParsedCommand(Type type) {
-        this(type, -1, null);
-    }
+  public ParsedCommand(Type type) {
+    this(type, -1, null, null);
+  }
 
-    public ParsedCommand(Type type, int index) {
-        this(type, index, null);
-    }
+  public ParsedCommand(Type type, int index) {
+    this(type, index, null, null);
+  }
 
-    public ParsedCommand(Type type, Task task) {
-        this(type, -1, task);
-    }
+  public ParsedCommand(Type type, Task task) {
+    this(type, -1, task, null);
+  }
 
-    private ParsedCommand(Type type, int index, Task task) {
-        this.type = type;
-        this.index = index;
-        this.task = task;
-    }
+  public ParsedCommand(Type type, String keyword) {
+    this(type, -1, null, keyword);
+  }
 
-    public Type getType() {
-        return type;
-    }
+  private ParsedCommand(Type type, int index, Task task, String keyword) {
+    this.type = type;
+    this.index = index;
+    this.task = task;
+    this.keyword = keyword;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public Type getType() {
+    return type;
+  }
 
-    public Task getTask() {
-        return task;
-    }
+  public int getIndex() {
+    return index;
+  }
+
+  public Task getTask() {
+    return task;
+  }
+
+  public String getKeyword() {
+    return keyword;
+  }
 }
