@@ -7,13 +7,27 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles loading and saving tasks to disk.
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Creates a storage helper for the given file path.
+     *
+     * @param filePath Storage file path.
+     */
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
     }
 
+    /**
+     * Loads tasks from disk.
+     *
+     * @return List of tasks.
+     * @throws DataLoadingException If loading fails.
+     */
     public ArrayList<Task> load() throws DataLoadingException {
         if (Files.notExists(filePath)) {
             return new ArrayList<>();
@@ -35,6 +49,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves tasks to disk.
+     *
+     * @param tasks Task list to persist.
+     * @throws DataLoadingException If saving fails.
+     */
     public void save(TaskList tasks) throws DataLoadingException {
         try {
             Files.createDirectories(filePath.getParent());
@@ -48,6 +68,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Parses a serialized task line into a {@link Task}.
+     *
+     * @param line Serialized task line.
+     * @return Task instance, or null if the line is invalid.
+     */
     private Task parseTask(String line) {
         String trimmed = line.strip();
         if (trimmed.isEmpty()) {
@@ -100,6 +126,12 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Serializes a task into a single line representation.
+     *
+     * @param task Task to serialize.
+     * @return Serialized task line.
+     */
     private String serializeTask(Task task) {
         String status = task.isDone ? "1" : "0";
         if (task instanceof ToDo) {

@@ -1,6 +1,16 @@
 package nuknagnel;
 
+/**
+ * Parses user input into executable commands.
+ */
 public class Parser {
+    /**
+     * Converts a raw input string into a {@link ParsedCommand}.
+     *
+     * @param input Raw user input.
+     * @return Parsed command with any required arguments.
+     * @throws InvalidInputException If the input is invalid or incomplete.
+     */
     public static ParsedCommand parse(String input) {
         String trimmed = input == null ? "" : input.trim();
         if (trimmed.isEmpty()) {
@@ -31,6 +41,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a 1-based index from user input and converts it to 0-based.
+     *
+     * @param raw Raw index string.
+     * @return Zero-based index.
+     * @throws InvalidInputException If the index is missing or invalid.
+     */
     private static int parseIndex(String raw) {
         if (raw == null || raw.trim().isEmpty()) {
             throw new InvalidInputException("Please input the required parameters for your command.");
@@ -46,6 +63,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a todo command into a {@link ToDo}.
+     *
+     * @param raw Raw description.
+     * @return Todo task.
+     * @throws InvalidInputException If the description is missing.
+     */
     private static Task parseTodo(String raw) {
         String description = raw == null ? "" : raw.trim();
         if (description.isEmpty()) {
@@ -54,6 +78,13 @@ public class Parser {
         return new ToDo(description);
     }
 
+    /**
+     * Parses a deadline command into a {@link Deadline}.
+     *
+     * @param raw Raw description and date.
+     * @return Deadline task.
+     * @throws InvalidInputException If the format is missing or invalid.
+     */
     private static Task parseDeadline(String raw) {
         if (raw == null || !raw.contains("/by ")) {
             throw new InvalidInputException("Deadline tasks must include /by <date>.");
@@ -66,6 +97,13 @@ public class Parser {
         return new Deadline(description, DateTimeParser.parseDate(parts[1].trim()));
     }
 
+    /**
+     * Parses an event command into an {@link Event}.
+     *
+     * @param raw Raw description and time range.
+     * @return Event task.
+     * @throws InvalidInputException If the format is missing or invalid.
+     */
     private static Task parseEvent(String raw) {
         if (raw == null || !raw.contains("/from ") || !raw.contains(" /to ")) {
             throw new InvalidInputException("Event tasks must include /from <start> /to <end>.");
