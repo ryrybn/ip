@@ -1,7 +1,15 @@
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class NukNagnel {
     private ArrayList<Task> items = new ArrayList<>();
+    private static final Path DATA_FILE = Paths.get("data", "nuknagnel.txt");
 
     // Sample data to test functionality
 //    private void samplePopulate() {
@@ -55,12 +63,14 @@ public class NukNagnel {
                     case "mark":
                         item = items.get(userInputScanner.nextInt() - 1);
                         item.markAsDone();
+                        saveToDisk();
                         System.out.println("Awesome! The task below has been marked as *done*:");
                         System.out.print(item);
                         break;
                     case "unmark":
                         item = items.get(userInputScanner.nextInt() - 1);
                         item.markAsUndone();
+                        saveToDisk();
                         System.out.println("Alright, I have marked this task as *not done yet*");
                         System.out.print(item);
                         break;
@@ -68,6 +78,7 @@ public class NukNagnel {
                         int id = userInputScanner.nextInt() - 1;
                         item = items.get(id);
                         items.remove(id);
+                        saveToDisk();
                         System.out.println("The task has been successfully removed.");
                         System.out.print(item);
                         printNoOfItems(items);
@@ -107,26 +118,125 @@ public class NukNagnel {
                 task = new ToDo(item);
                 break;
             case "deadline":
-                cmd = item.split("/by ");
+                if (!item.contains("/by ")) {
+                    throw new InvalidInputException("Deadline tasks must include /by <date>.");
+                }
+                cmd = item.split("/by ", 2);
                 task = new Deadline(cmd[0].stripTrailing(), cmd[1]);
                 break;
             case "event":
-                cmd = item.split("/from ");
+                if (!item.contains("/from ") || !item.contains(" /to ")) {
+                    throw new InvalidInputException("Event tasks must include /from <start> /to <end>.");
+                }
+                cmd = item.split("/from ", 2);
                 String desc = cmd[0].stripTrailing();;
-                cmd = cmd[1].split(" /to ");
+                cmd = cmd[1].split(" /to ", 2);
                 String from = cmd[0];
                 String to = cmd[1];
                 task = new Event(desc, from, to);
                 break;
         }
         items.add(task);
+        saveToDisk();
         System.out.println("I have added the task as requested:\n" + task);
         printNoOfItems(items);
+    }
+
+    private void loadFromDisk() {
+        if (Files.notExists(DATA_FILE)) {
+            return;
+        }
+        try {
+            List<String> lines = Files.readAllLines(DATA_FILE);
+            for (String line : lines) {
+                Task task = parseTask(line);
+                if (task == null) {
+                    System.err.println("Skipping corrupted line in data file: " + line);
+                    continue;
+                }
+                items.add(task);
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to load tasks from disk.");
+        }
+    }
+
+    private Task parseTask(String line) {
+        String trimmed = line.strip();
+        if (trimmed.isEmpty()) {
+            return null;
+        }
+        String[] parts = trimmed.split("\\s*\\|\\s*");
+        if (parts.length < 3) {
+            return null;
+        }
+        String type = parts[0];
+        String status = parts[1];
+        String description = parts[2];
+        Task task;
+        switch (type) {
+            case "T":
+                if (parts.length != 3) {
+                    return null;
+                }
+                task = new ToDo(description);
+                break;
+            case "D":
+                if (parts.length != 4) {
+                    return null;
+                }
+                task = new Deadline(description, parts[3]);
+                break;
+            case "E":
+                if (parts.length != 5) {
+                    return null;
+                }
+                task = new Event(description, parts[3], parts[4]);
+                break;
+            default:
+                return null;
+        }
+        if ("1".equals(status)) {
+            task.markAsDone();
+        } else if (!"0".equals(status)) {
+            return null;
+        }
+        return task;
+    }
+
+    private void saveToDisk() {
+        try {
+            Files.createDirectories(DATA_FILE.getParent());
+            List<String> lines = new ArrayList<>();
+            for (Task task : items) {
+                lines.add(serializeTask(task));
+            }
+            Files.write(DATA_FILE, lines);
+        } catch (IOException e) {
+            System.err.println("Unable to save tasks to disk.");
+        }
+    }
+
+    private String serializeTask(Task task) {
+        String status = task.isDone ? "1" : "0";
+        if (task instanceof ToDo) {
+            return String.join(" | ", "T", status, task.getDescription());
+        }
+        if (task instanceof Deadline) {
+            Deadline deadline = (Deadline) task;
+            return String.join(" | ", "D", status, task.getDescription(), deadline.by);
+        }
+        if (task instanceof Event) {
+            Event event = (Event) task;
+            return String.join(" | ", "E", status, task.getDescription(), event.from, event.to);
+        }
+        return String.join(" | ", "T", status, task.getDescription());
     }
 
     public static void main(String[] args) {
         NukNagnel chat = new NukNagnel();
 //        chat.samplePopulate();
+        chat.loadFromDisk();
         chat.printIntro();
         chat.taskTracker();
         chat.printOutro();
