@@ -1,0 +1,58 @@
+.root {
+    -fx-font-family: "Segoe UI";
+}
+
+.main-window {
+    -fx-background-color: linear-gradient(to bottom, #f6f8fb, #eef2f7);
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.text-field {
+    -fx-font-size: 13px;
+    -fx-background-radius: 10;
+}
+
+.button {
+    -fx-background-color: #1f6feb;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.button:hover {
+    -fx-background-color: #195ec7;
+}
+
+.dialog-box {
+    -fx-padding: 0 0 2 0;
+}
+
+.dialog-box .label {
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 14;
+    -fx-font-size: 13px;
+}
+
+.user-dialog {
+    -fx-alignment: center-right;
+}
+
+.user-dialog .label {
+    -fx-background-color: #cce4ff;
+    -fx-text-fill: #0b2541;
+}
+
+.bot-dialog {
+    -fx-alignment: center-left;
+}
+
+.bot-dialog .label {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1f2933;
+}
