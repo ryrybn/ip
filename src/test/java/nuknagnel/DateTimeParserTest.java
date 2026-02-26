@@ -21,7 +21,9 @@ public class DateTimeParserTest {
     InvalidInputException exception =
         assertThrows(InvalidInputException.class, () -> DateTimeParser.parseDate("02-01-2024"));
 
-    assertEquals("Please use yyyy-mm-dd for dates.", exception.getMessage());
+    assertEquals(
+        "I couldn't read that date. Use `yyyy-mm-dd` or a weekday like `Mon`.",
+        exception.getMessage());
   }
 
   @Test
@@ -88,6 +90,8 @@ public class DateTimeParserTest {
             InvalidInputException.class, () -> DateTimeParser.parseDateTime("2024/02/01 13:45"));
 
     assertEquals(
-        "Please use yyyy-mm-dd HHmm or yyyy-mm-dd HH:mm for date-time.", exception.getMessage());
+        "I couldn't read that date-time. Use `yyyy-mm-dd HHmm`, `yyyy-mm-dd HH:mm`, "
+            + "or a weekday like `Mon 1400`.",
+        exception.getMessage());
   }
 }

@@ -57,7 +57,7 @@ public class ParserTest {
     InvalidInputException exception =
         assertThrows(InvalidInputException.class, () -> Parser.parse("find book"));
 
-    assertEquals("Invalid command.", exception.getMessage());
+    assertEquals("I couldn't read that command. Try `list` or `todo <task>`.", exception.getMessage());
   }
 
   @Test
@@ -65,7 +65,7 @@ public class ParserTest {
     InvalidInputException exception =
         assertThrows(InvalidInputException.class, () -> Parser.parse("mark"));
 
-    assertEquals("Please input the required parameters for your command.", exception.getMessage());
+    assertEquals("I need a task number for that command.", exception.getMessage());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class ParserTest {
     InvalidInputException exception =
         assertThrows(InvalidInputException.class, () -> Parser.parse("delete 0"));
 
-    assertEquals("Please provide a valid task number.", exception.getMessage());
+    assertEquals("That task number doesn't exist. Try `list` to check.", exception.getMessage());
   }
 
   @Test
@@ -81,6 +81,6 @@ public class ParserTest {
     InvalidInputException exception =
         assertThrows(InvalidInputException.class, () -> Parser.parse("todo "));
 
-    assertEquals("Todo tasks must include a description.", exception.getMessage());
+    assertEquals("I need a description for that todo.", exception.getMessage());
   }
 }

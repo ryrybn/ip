@@ -10,15 +10,14 @@ public class Ui {
   /** Displays the welcome message. */
   public void showWelcome() {
     showLine();
-    String intro = " Good day friend! My name is NukNagnel.\n" + " What can I do you for?";
+    String intro = " NukNagnel here. I keep your tasks on track.\n What should we plan first?";
     System.out.print(intro);
     showLine();
   }
 
   /** Displays the goodbye message. */
   public void showGoodbye() {
-    String exit =
-        " This conversation has ended.\n Hope to chat again soon and have a splendid day ahead!";
+    String exit = " Session closed. Your tasks are saved.";
     System.out.print(exit);
     showLine();
   }
@@ -44,7 +43,7 @@ public class Ui {
    * @param tasks Task list to render.
    */
   public void showTaskList(TaskList tasks) {
-    System.out.println("Below are the tasks stored in your list:");
+    System.out.println("Here is your task board:");
     List<Task> items = tasks.getTasks();
     for (int i = 0; i < items.size(); i++) {
       String s = String.valueOf(i + 1) + ". " + items.get(i);
@@ -59,7 +58,7 @@ public class Ui {
    * @param size Updated task count.
    */
   public void showTaskAdded(Task task, int size) {
-    System.out.println("I have added the task as requested:\n" + task);
+    System.out.println("Added to your list:\n" + task);
     showTaskCount(size);
   }
 
@@ -70,7 +69,7 @@ public class Ui {
    * @param size Updated task count.
    */
   public void showTaskDeleted(Task task, int size) {
-    System.out.println("The task has been successfully removed.");
+    System.out.println("Removed this task:");
     System.out.print(task);
     showTaskCount(size);
   }
@@ -81,7 +80,7 @@ public class Ui {
    * @param task Marked task.
    */
   public void showMarked(Task task) {
-    System.out.println("Awesome! The task below has been marked as *done*:");
+    System.out.println("Logged. This task is now marked done:");
     System.out.print(task);
   }
 
@@ -91,7 +90,7 @@ public class Ui {
    * @param task Unmarked task.
    */
   public void showUnmarked(Task task) {
-    System.out.println("Alright, I have marked this task as *not done yet*");
+    System.out.println("Noted. This task is marked not done:");
     System.out.print(task);
   }
 
@@ -101,7 +100,7 @@ public class Ui {
    * @param size Task count.
    */
   public void showTaskCount(int size) {
-    System.out.println("\nNow you have " + size + " tasks stored in the list.");
+    System.out.println("\nYou now have " + size + " tasks in the list.");
   }
 
   /**
@@ -115,11 +114,11 @@ public class Ui {
 
   /** Displays an error when loading fails. */
   public void showLoadingError() {
-    System.err.println("Unable to load tasks from disk.");
+    System.err.println("I couldn't load your tasks from disk.");
   }
 
   /** Displays an error when saving fails. */
   public void showSavingError() {
-    System.err.println("Unable to save tasks to disk.");
+    System.err.println("I couldn't save your tasks to disk.");
   }
 }

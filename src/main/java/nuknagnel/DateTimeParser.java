@@ -52,7 +52,8 @@ public class DateTimeParser {
 
   static LocalDate parseDate(String raw, LocalDate referenceDate) {
     if (raw == null || raw.trim().isEmpty()) {
-      throw new InvalidInputException("Please use yyyy-mm-dd for dates.");
+      throw new InvalidInputException(
+          "I couldn't read that date. Use `yyyy-mm-dd` or a weekday like `Mon`.");
     }
     assert referenceDate != null : "Reference date must not be null.";
 
@@ -68,7 +69,8 @@ public class DateTimeParser {
       return naturalDate;
     }
 
-    throw new InvalidInputException("Please use yyyy-mm-dd for dates.");
+    throw new InvalidInputException(
+        "I couldn't read that date. Use `yyyy-mm-dd` or a weekday like `Mon`.");
   }
 
   /**
@@ -85,7 +87,8 @@ public class DateTimeParser {
   static LocalDateTime parseDateTime(String raw, LocalDate referenceDate) {
     if (raw == null || raw.trim().isEmpty()) {
       throw new InvalidInputException(
-          "Please use yyyy-mm-dd HHmm or yyyy-mm-dd HH:mm for date-time.");
+          "I couldn't read that date-time. Use `yyyy-mm-dd HHmm`, `yyyy-mm-dd HH:mm`, "
+              + "or a weekday like `Mon 1400`.");
     }
     assert referenceDate != null : "Reference date must not be null.";
 
@@ -112,7 +115,8 @@ public class DateTimeParser {
     }
 
     throw new InvalidInputException(
-        "Please use yyyy-mm-dd HHmm or yyyy-mm-dd HH:mm for date-time.");
+        "I couldn't read that date-time. Use `yyyy-mm-dd HHmm`, `yyyy-mm-dd HH:mm`, "
+            + "or a weekday like `Mon 1400`.");
   }
 
   private static LocalDate parseNaturalDate(String raw, LocalDate referenceDate) {

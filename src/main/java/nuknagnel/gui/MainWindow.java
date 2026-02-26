@@ -58,11 +58,10 @@ public class MainWindow {
   }
 
   private boolean isErrorResponse(String response) {
-    return response.startsWith("Invalid command.")
-        || response.startsWith("Please ")
-        || response.startsWith("Todo tasks")
-        || response.startsWith("Deadline tasks")
-        || response.startsWith("Event tasks")
-        || response.startsWith("Unable to ");
+    return response.startsWith("I couldn't")
+        || response.startsWith("I need")
+        || response.startsWith("Use `")
+        || response.startsWith("That task number")
+        || response.startsWith("The event end time");
   }
 }

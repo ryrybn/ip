@@ -4,7 +4,7 @@ package nuknagnel;
 public class InvalidInputException extends RuntimeException {
   /** Creates a default invalid input exception. */
   public InvalidInputException() {
-    super("Invalid command.");
+    super("I couldn't read that command. Try `list` or `todo <task>`.");
   }
 
   /**

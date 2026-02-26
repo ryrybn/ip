@@ -52,16 +52,16 @@ public class Parser {
    */
   private static int parseIndex(String raw) {
     if (raw == null || raw.trim().isEmpty()) {
-      throw new InvalidInputException("Please input the required parameters for your command.");
+      throw new InvalidInputException("I need a task number for that command.");
     }
     try {
       int index = Integer.parseInt(raw.trim()) - 1;
       if (index < 0) {
-        throw new InvalidInputException("Please provide a valid task number.");
+        throw new InvalidInputException("That task number doesn't exist. Try `list` to check.");
       }
       return index;
     } catch (NumberFormatException e) {
-      throw new InvalidInputException("Please provide a valid task number.");
+      throw new InvalidInputException("That task number doesn't exist. Try `list` to check.");
     }
   }
 
@@ -75,7 +75,7 @@ public class Parser {
   private static Task parseTodo(String raw) {
     String description = raw == null ? "" : raw.trim();
     if (description.isEmpty()) {
-      throw new InvalidInputException("Todo tasks must include a description.");
+      throw new InvalidInputException("I need a description for that todo.");
     }
     return new ToDo(description);
   }
@@ -89,13 +89,13 @@ public class Parser {
    */
   private static Task parseDeadline(String raw) {
     if (raw == null || !raw.contains("/by ")) {
-      throw new InvalidInputException("Deadline tasks must include /by <date>.");
+      throw new InvalidInputException("Use `deadline <description> /by <date>`.");
     }
     String[] parts = raw.split("/by ", 2);
     assert parts.length == 2 : "Deadline split by /by should produce 2 parts.";
     String description = parts[0].stripTrailing();
     if (description.isBlank()) {
-      throw new InvalidInputException("Deadline tasks must include a description.");
+      throw new InvalidInputException("I need a description for that deadline.");
     }
     return new Deadline(description, DateTimeParser.parseDate(parts[1].trim()));
   }
@@ -109,25 +109,25 @@ public class Parser {
    */
   private static Task parseEvent(String raw) {
     if (raw == null || !raw.contains("/from ") || !raw.contains(" /to ")) {
-      throw new InvalidInputException("Event tasks must include /from <start> /to <end>.");
+      throw new InvalidInputException("Use `event <description> /from <start> /to <end>`.");
     }
     String[] parts = raw.split("/from ", 2);
     assert parts.length == 2 : "Event split by /from should produce 2 parts.";
     String description = parts[0].stripTrailing();
     if (description.isBlank()) {
-      throw new InvalidInputException("Event tasks must include a description.");
+      throw new InvalidInputException("I need a description for that event.");
     }
     String[] timeParts = parts[1].split(" /to ", 2);
     assert timeParts.length == 2 : "Event split by /to should produce 2 parts.";
     String from = timeParts[0].trim();
     String to = timeParts[1].trim();
     if (from.isEmpty() || to.isEmpty()) {
-      throw new InvalidInputException("Event tasks must include both start and end date-time.");
+      throw new InvalidInputException("I need both a start and end date-time for that event.");
     }
     LocalDateTime start = DateTimeParser.parseDateTime(from);
     LocalDateTime end = DateTimeParser.parseDateTime(to);
     if (end.isBefore(start)) {
-      throw new InvalidInputException("Event end date-time must not be before start date-time.");
+      throw new InvalidInputException("The event end time must be after the start time.");
     }
     return new Event(description, start, end);
   }

@@ -45,7 +45,7 @@ public class NukNagnel {
 
   /** Returns the greeting shown when the app starts. */
   public String getWelcomeMessage() {
-    return "Good day friend! My name is NukNagnel.\nWhat can I do you for?";
+    return "NukNagnel here. I keep your tasks on track.\nWhat should we plan first?";
   }
 
   /** Returns true when the app has received an exit command. */
@@ -71,50 +71,50 @@ public class NukNagnel {
           Task toMark = tasks.get(command.getIndex());
           toMark.markAsDone();
           storage.save(tasks);
-          return "Awesome! The task below has been marked as *done*:\n" + toMark;
+          return "Logged. This task is now marked done:\n" + toMark;
         case UNMARK:
           assert command.getIndex() >= 0 : "UNMARK command should have a non-negative index.";
           Task toUnmark = tasks.get(command.getIndex());
           toUnmark.markAsUndone();
           storage.save(tasks);
-          return "Alright, I have marked this task as *not done yet*\n" + toUnmark;
+          return "Noted. This task is marked not done:\n" + toUnmark;
         case DELETE:
           assert command.getIndex() >= 0 : "DELETE command should have a non-negative index.";
           Task removed = tasks.remove(command.getIndex());
           storage.save(tasks);
-          return "The task has been successfully removed.\n"
+          return "Removed this task:\n"
               + removed
-              + "\nNow you have "
+              + "\nYou now have "
               + tasks.size()
-              + " tasks stored in the list.";
+              + " tasks in the list.";
         case TODO:
         case DEADLINE:
         case EVENT:
           assert command.getTask() != null : "Task creation commands should provide a task payload.";
           tasks.add(command.getTask());
           storage.save(tasks);
-          return "I have added the task as requested:\n"
+          return "Added to your list:\n"
               + command.getTask()
-              + "\nNow you have "
+              + "\nYou now have "
               + tasks.size()
-              + " tasks stored in the list.";
+              + " tasks in the list.";
         case BYE:
           isExit = true;
-          return "This conversation has ended.\nHope to chat again soon and have a splendid day ahead!";
+          return "Session closed. Your tasks are saved.";
         default:
           throw new InvalidInputException();
       }
     } catch (InvalidInputException e) {
       return e.getMessage();
     } catch (IndexOutOfBoundsException e) {
-      return "Please provide a valid task number.";
+      return "That task number doesn't exist. Try `list` to check.";
     } catch (DataLoadingException e) {
-      return "Unable to save tasks to disk.";
+      return "I couldn't save your tasks to disk.";
     }
   }
 
   private String formatTaskList() {
-    StringBuilder builder = new StringBuilder("Below are the tasks stored in your list:");
+    StringBuilder builder = new StringBuilder("Here is your task board:");
     for (int i = 0; i < tasks.size(); i++) {
       builder.append("\n").append(i + 1).append(". ").append(tasks.get(i));
     }
