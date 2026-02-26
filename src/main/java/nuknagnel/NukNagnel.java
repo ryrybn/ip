@@ -91,6 +91,9 @@ public class NukNagnel {
         case DEADLINE:
         case EVENT:
           assert command.getTask() != null : "Task creation commands should provide a task payload.";
+          if (tasks.containsEquivalent(command.getTask())) {
+            return "That task is already on your board. No duplicate added.";
+          }
           tasks.add(command.getTask());
           storage.save(tasks);
           return "Added to your list:\n"

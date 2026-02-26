@@ -62,6 +62,7 @@ public class MainWindow {
         || response.startsWith("I need")
         || response.startsWith("Use `")
         || response.startsWith("That task number")
+        || response.startsWith("That task is already")
         || response.startsWith("The event end time");
   }
 }

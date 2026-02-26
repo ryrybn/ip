@@ -1,5 +1,7 @@
 package nuknagnel;
 
+import java.util.Objects;
+
 /** Represents a task with a description and completion status. */
 public class Task {
   protected String description;
@@ -43,6 +45,18 @@ public class Task {
    */
   public String getDescription() {
     return this.description;
+  }
+
+  /**
+   * Returns true if another task represents the same task content.
+   *
+   * @param other Task to compare against.
+   * @return True if both tasks represent the same details.
+   */
+  public boolean isSameTask(Task other) {
+    return other != null
+        && getClass().equals(other.getClass())
+        && Objects.equals(description, other.description);
   }
 
   /**

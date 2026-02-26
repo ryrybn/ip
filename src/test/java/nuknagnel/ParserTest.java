@@ -83,4 +83,36 @@ public class ParserTest {
 
     assertEquals("I need a description for that todo.", exception.getMessage());
   }
+
+  @Test
+  public void parse_deadlineWithRepeatedBy_throws() {
+    InvalidInputException exception =
+        assertThrows(
+            InvalidInputException.class,
+            () -> Parser.parse("deadline report /by 2024-02-01 /by 2024-02-02"));
+
+    assertEquals("Use only one `/by` in a deadline command.", exception.getMessage());
+  }
+
+  @Test
+  public void parse_eventWithRepeatedFromOrTo_throws() {
+    InvalidInputException exception =
+        assertThrows(
+            InvalidInputException.class,
+            () ->
+                Parser.parse(
+                    "event sync /from 2024-02-01 1300 /from 2024-02-01 1400 /to 2024-02-01 1500"));
+
+    assertEquals("Use one `/from` and one `/to` in an event command.", exception.getMessage());
+  }
+
+  @Test
+  public void parse_eventWithSameStartAndEnd_throws() {
+    InvalidInputException exception =
+        assertThrows(
+            InvalidInputException.class,
+            () -> Parser.parse("event sync /from 2024-02-01 1300 /to 2024-02-01 1300"));
+
+    assertEquals("The event end time must be after the start time.", exception.getMessage());
+  }
 }

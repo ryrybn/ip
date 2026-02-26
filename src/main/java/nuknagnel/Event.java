@@ -22,7 +22,7 @@ public class Event extends Task {
     super(description);
     assert from != null : "Event start date-time must not be null.";
     assert to != null : "Event end date-time must not be null.";
-    assert !to.isBefore(from) : "Event end must not be before start.";
+    assert to.isAfter(from) : "Event end must be after start.";
     this.from = from;
     this.to = to;
   }
@@ -43,6 +43,15 @@ public class Event extends Task {
    */
   public LocalDateTime getTo() {
     return this.to;
+  }
+
+  @Override
+  public boolean isSameTask(Task other) {
+    if (!(other instanceof Event)) {
+      return false;
+    }
+    Event otherEvent = (Event) other;
+    return super.isSameTask(other) && from.equals(otherEvent.from) && to.equals(otherEvent.to);
   }
 
   /**

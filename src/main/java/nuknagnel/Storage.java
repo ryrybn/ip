@@ -1,9 +1,11 @@
 package nuknagnel;
 
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,11 @@ public class Storage {
   public Storage(String filePath) {
     assert filePath != null : "Storage file path must not be null.";
     assert !filePath.trim().isEmpty() : "Storage file path must not be blank.";
-    this.filePath = Paths.get(filePath);
+    try {
+      this.filePath = Paths.get(filePath);
+    } catch (InvalidPathException e) {
+      throw new IllegalArgumentException("Storage path is invalid.", e);
+    }
     assert this.filePath.getFileName() != null : "Storage path should include a file name.";
   }
 
@@ -45,7 +51,7 @@ public class Storage {
         tasks.add(task);
       }
       return tasks;
-    } catch (IOException e) {
+    } catch (IOException | SecurityException e) {
       throw new DataLoadingException("Unable to load tasks from disk.", e);
     }
   }
@@ -69,7 +75,7 @@ public class Storage {
         lines.add(serializeTask(task));
       }
       Files.write(filePath, lines);
-    } catch (IOException e) {
+    } catch (IOException | SecurityException e) {
       throw new DataLoadingException("Unable to save tasks to disk.", e);
     }
   }
@@ -118,11 +124,16 @@ public class Storage {
           return null;
         }
         try {
+          LocalDateTime from = DateTimeParser.parseDateTime(parts[3]);
+          LocalDateTime to = DateTimeParser.parseDateTime(parts[4]);
+          if (!to.isAfter(from)) {
+            return null;
+          }
           task =
               new Event(
                   description,
-                  DateTimeParser.parseDateTime(parts[3]),
-                  DateTimeParser.parseDateTime(parts[4]));
+                  from,
+                  to);
         } catch (InvalidInputException e) {
           return null;
         }

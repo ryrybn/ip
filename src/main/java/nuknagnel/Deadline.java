@@ -30,6 +30,15 @@ public class Deadline extends Task {
     return this.by;
   }
 
+  @Override
+  public boolean isSameTask(Task other) {
+    if (!(other instanceof Deadline)) {
+      return false;
+    }
+    Deadline otherDeadline = (Deadline) other;
+    return super.isSameTask(other) && by.equals(otherDeadline.by);
+  }
+
   /**
    * Returns a display string for this deadline.
    *

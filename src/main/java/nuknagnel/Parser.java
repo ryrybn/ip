@@ -91,6 +91,9 @@ public class Parser {
     if (raw == null || !raw.contains("/by ")) {
       throw new InvalidInputException("Use `deadline <description> /by <date>`.");
     }
+    if (countOccurrences(raw, "/by ") > 1) {
+      throw new InvalidInputException("Use only one `/by` in a deadline command.");
+    }
     String[] parts = raw.split("/by ", 2);
     assert parts.length == 2 : "Deadline split by /by should produce 2 parts.";
     String description = parts[0].stripTrailing();
@@ -111,6 +114,9 @@ public class Parser {
     if (raw == null || !raw.contains("/from ") || !raw.contains(" /to ")) {
       throw new InvalidInputException("Use `event <description> /from <start> /to <end>`.");
     }
+    if (countOccurrences(raw, "/from ") > 1 || countOccurrences(raw, " /to ") > 1) {
+      throw new InvalidInputException("Use one `/from` and one `/to` in an event command.");
+    }
     String[] parts = raw.split("/from ", 2);
     assert parts.length == 2 : "Event split by /from should produce 2 parts.";
     String description = parts[0].stripTrailing();
@@ -126,9 +132,23 @@ public class Parser {
     }
     LocalDateTime start = DateTimeParser.parseDateTime(from);
     LocalDateTime end = DateTimeParser.parseDateTime(to);
-    if (end.isBefore(start)) {
+    if (!end.isAfter(start)) {
       throw new InvalidInputException("The event end time must be after the start time.");
     }
     return new Event(description, start, end);
+  }
+
+  private static int countOccurrences(String source, String token) {
+    int count = 0;
+    int start = 0;
+    while (true) {
+      int found = source.indexOf(token, start);
+      if (found < 0) {
+        break;
+      }
+      count++;
+      start = found + token.length();
+    }
+    return count;
   }
 }

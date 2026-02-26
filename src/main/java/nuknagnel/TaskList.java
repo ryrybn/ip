@@ -64,6 +64,22 @@ public class TaskList {
   }
 
   /**
+   * Returns true if an equivalent task already exists in the list.
+   *
+   * @param target Task to check.
+   * @return True if an equivalent task exists.
+   */
+  public boolean containsEquivalent(Task target) {
+    assert target != null : "Target task for duplicate check must not be null.";
+    for (Task existing : tasks) {
+      if (existing != null && existing.isSameTask(target)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Returns the backing task list.
    *
    * @return Tasks list.
