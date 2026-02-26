@@ -15,6 +15,7 @@ public class NukNagnel {
    * @param filePath Path to the task data file.
    */
   public NukNagnel(String filePath) {
+    assert filePath != null : "Application storage file path must not be null.";
     ui = new Ui();
     storage = new Storage(filePath);
     TaskList loadedTasks;
@@ -60,20 +61,24 @@ public class NukNagnel {
   public String getResponse(String input) {
     try {
       ParsedCommand command = Parser.parse(input);
+      assert command != null : "Parser should always return a command or throw.";
       switch (command.getType()) {
         case LIST:
           return formatTaskList();
         case MARK:
+          assert command.getIndex() >= 0 : "MARK command should have a non-negative index.";
           Task toMark = tasks.get(command.getIndex());
           toMark.markAsDone();
           storage.save(tasks);
           return "Awesome! The task below has been marked as *done*:\n" + toMark;
         case UNMARK:
+          assert command.getIndex() >= 0 : "UNMARK command should have a non-negative index.";
           Task toUnmark = tasks.get(command.getIndex());
           toUnmark.markAsUndone();
           storage.save(tasks);
           return "Alright, I have marked this task as *not done yet*\n" + toUnmark;
         case DELETE:
+          assert command.getIndex() >= 0 : "DELETE command should have a non-negative index.";
           Task removed = tasks.remove(command.getIndex());
           storage.save(tasks);
           return "The task has been successfully removed.\n"
@@ -84,6 +89,7 @@ public class NukNagnel {
         case TODO:
         case DEADLINE:
         case EVENT:
+          assert command.getTask() != null : "Task creation commands should provide a task payload.";
           tasks.add(command.getTask());
           storage.save(tasks);
           return "I have added the task as requested:\n"

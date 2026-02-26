@@ -47,9 +47,22 @@ public class ParsedCommand {
   }
 
   private ParsedCommand(Type type, int index, Task task) {
+    assert type != null : "Command type must not be null.";
+    assert !isIndexCommand(type) || index >= 0 : "Index commands require a non-negative index.";
+    assert !isTaskCommand(type) || task != null : "Task commands require a task payload.";
+    assert isIndexCommand(type) || index == -1 : "Only index commands should carry index values.";
+    assert isTaskCommand(type) || task == null : "Only task commands should carry task payloads.";
     this.type = type;
     this.index = index;
     this.task = task;
+  }
+
+  private static boolean isIndexCommand(Type type) {
+    return type == Type.MARK || type == Type.UNMARK || type == Type.DELETE;
+  }
+
+  private static boolean isTaskCommand(Type type) {
+    return type == Type.TODO || type == Type.DEADLINE || type == Type.EVENT;
   }
 
   /**

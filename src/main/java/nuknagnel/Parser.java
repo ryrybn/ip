@@ -15,8 +15,10 @@ public class Parser {
       throw new InvalidInputException();
     }
     String[] parts = trimmed.split("\\s+", 2);
+    assert parts.length >= 1 : "Split command should always yield at least one token.";
     String command = parts[0];
     String rest = parts.length > 1 ? parts[1] : "";
+    assert !command.isEmpty() : "Command token should not be empty after trim.";
     switch (command) {
       case "bye":
         return new ParsedCommand(ParsedCommand.Type.BYE);
@@ -88,6 +90,7 @@ public class Parser {
       throw new InvalidInputException("Deadline tasks must include /by <date>.");
     }
     String[] parts = raw.split("/by ", 2);
+    assert parts.length == 2 : "Deadline split by /by should produce 2 parts.";
     String description = parts[0].stripTrailing();
     if (description.isBlank()) {
       throw new InvalidInputException("Deadline tasks must include a description.");
@@ -107,11 +110,13 @@ public class Parser {
       throw new InvalidInputException("Event tasks must include /from <start> /to <end>.");
     }
     String[] parts = raw.split("/from ", 2);
+    assert parts.length == 2 : "Event split by /from should produce 2 parts.";
     String description = parts[0].stripTrailing();
     if (description.isBlank()) {
       throw new InvalidInputException("Event tasks must include a description.");
     }
     String[] timeParts = parts[1].split(" /to ", 2);
+    assert timeParts.length == 2 : "Event split by /to should produce 2 parts.";
     String from = timeParts[0].trim();
     String to = timeParts[1].trim();
     return new Event(
