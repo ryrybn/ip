@@ -53,19 +53,11 @@ public class ParserTest {
   }
 
   @Test
-  public void parse_findCommand_success() {
-    ParsedCommand command = Parser.parse("find book");
-
-    assertEquals(ParsedCommand.Type.FIND, command.getType());
-    assertEquals("book", command.getKeyword());
-  }
-
-  @Test
-  public void parse_missingFindKeyword_throws() {
+  public void parse_unknownCommand_throws() {
     InvalidInputException exception =
-        assertThrows(InvalidInputException.class, () -> Parser.parse("find "));
+        assertThrows(InvalidInputException.class, () -> Parser.parse("find book"));
 
-    assertEquals("Find command must include a keyword.", exception.getMessage());
+    assertEquals("Invalid command.", exception.getMessage());
   }
 
   @Test

@@ -18,6 +18,7 @@ public class TaskList {
    * @param tasks Existing tasks to wrap.
    */
   public TaskList(ArrayList<Task> tasks) {
+    assert tasks != null : "Task list backing array must not be null.";
     this.tasks = tasks;
   }
 
@@ -27,7 +28,10 @@ public class TaskList {
    * @param task Task to add.
    */
   public void add(Task task) {
+    assert task != null : "Cannot add a null task.";
+    int initialSize = tasks.size();
     tasks.add(task);
+    assert tasks.size() == initialSize + 1 : "Task list size should increase after add.";
   }
 
   /**

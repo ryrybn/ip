@@ -15,8 +15,11 @@ public class DateTimeParser {
    * @throws InvalidInputException If the format is invalid.
    */
   public static LocalDate parseDate(String raw) {
+    if (raw == null || raw.trim().isEmpty()) {
+      throw new InvalidInputException("Please use yyyy-mm-dd for dates.");
+    }
     try {
-      return LocalDate.parse(raw);
+      return LocalDate.parse(raw.trim());
     } catch (DateTimeParseException e) {
       throw new InvalidInputException("Please use yyyy-mm-dd for dates.");
     }
@@ -30,8 +33,13 @@ public class DateTimeParser {
    * @throws InvalidInputException If the format is invalid.
    */
   public static LocalDateTime parseDateTime(String raw) {
+    if (raw == null || raw.trim().isEmpty()) {
+      throw new InvalidInputException(
+          "Please use yyyy-mm-dd HHmm or yyyy-mm-dd HH:mm for date-time.");
+    }
+    String trimmed = raw.trim();
     try {
-      return LocalDateTime.parse(raw);
+      return LocalDateTime.parse(trimmed);
     } catch (DateTimeParseException e) {
       // fall through to custom formats
     }
@@ -42,7 +50,7 @@ public class DateTimeParser {
         };
     for (DateTimeFormatter format : formats) {
       try {
-        return LocalDateTime.parse(raw, format);
+        return LocalDateTime.parse(trimmed, format);
       } catch (DateTimeParseException e) {
         // try next format
       }
