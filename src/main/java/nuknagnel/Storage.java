@@ -18,6 +18,7 @@ public class Storage {
    */
   public Storage(String filePath) {
     assert filePath != null : "Storage file path must not be null.";
+    assert !filePath.trim().isEmpty() : "Storage file path must not be blank.";
     this.filePath = Paths.get(filePath);
     assert this.filePath.getFileName() != null : "Storage path should include a file name.";
   }
@@ -58,7 +59,10 @@ public class Storage {
   public void save(TaskList tasks) throws DataLoadingException {
     assert tasks != null : "Task list to save must not be null.";
     try {
-      Files.createDirectories(filePath.getParent());
+      Path parent = filePath.getParent();
+      if (parent != null) {
+        Files.createDirectories(parent);
+      }
       List<String> lines = new ArrayList<>();
       for (Task task : tasks.getTasks()) {
         assert task != null : "Persisted task entries must not be null.";
@@ -77,6 +81,9 @@ public class Storage {
    * @return Task instance, or null if the line is invalid.
    */
   private Task parseTask(String line) {
+    if (line == null) {
+      return null;
+    }
     String trimmed = line.strip();
     if (trimmed.isEmpty()) {
       return null;
@@ -157,6 +164,7 @@ public class Storage {
           event.getFrom().toString(),
           event.getTo().toString());
     }
-    return String.join(" | ", "T", status, task.getDescription());
+    assert false : "Unsupported task subtype: " + task.getClass().getName();
+    throw new IllegalStateException("Unsupported task subtype: " + task.getClass().getName());
   }
 }

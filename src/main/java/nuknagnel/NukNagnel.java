@@ -31,6 +31,7 @@ public class NukNagnel {
 
   /** Runs the main input loop. */
   public void run() {
+
     ui.showLine();
     System.out.println(getWelcomeMessage());
     ui.showLine();
