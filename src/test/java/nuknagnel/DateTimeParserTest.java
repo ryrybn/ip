@@ -27,6 +27,16 @@ public class DateTimeParserTest {
   }
 
   @Test
+  public void parseDate_blankInput_throws() {
+    InvalidInputException exception =
+        assertThrows(InvalidInputException.class, () -> DateTimeParser.parseDate("   "));
+
+    assertEquals(
+        "I couldn't read that date. Use `yyyy-mm-dd` or a weekday like `Mon`.",
+        exception.getMessage());
+  }
+
+  @Test
   public void parseDate_naturalWeekday_success() {
     LocalDate referenceDate = LocalDate.of(2024, 2, 1); // Thursday
 
@@ -70,6 +80,15 @@ public class DateTimeParserTest {
     LocalDate referenceDate = LocalDate.of(2024, 2, 1); // Thursday
 
     LocalDateTime dateTime = DateTimeParser.parseDateTime("Mon 1345", referenceDate);
+
+    assertEquals(LocalDateTime.of(2024, 2, 5, 13, 45), dateTime);
+  }
+
+  @Test
+  public void parseDateTime_naturalWeekdayWithColonTime_success() {
+    LocalDate referenceDate = LocalDate.of(2024, 2, 1); // Thursday
+
+    LocalDateTime dateTime = DateTimeParser.parseDateTime("Mon 13:45", referenceDate);
 
     assertEquals(LocalDateTime.of(2024, 2, 5, 13, 45), dateTime);
   }

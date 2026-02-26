@@ -24,6 +24,14 @@ public class ParserTest {
   }
 
   @Test
+  public void parse_markCommand_withExtraSpaces_success() {
+    ParsedCommand command = Parser.parse("   mark    2   ");
+
+    assertEquals(ParsedCommand.Type.MARK, command.getType());
+    assertEquals(1, command.getIndex());
+  }
+
+  @Test
   public void parse_todoCommand_success() {
     ParsedCommand command = Parser.parse("todo read book");
 
@@ -85,6 +93,22 @@ public class ParserTest {
   }
 
   @Test
+  public void parse_missingDeadlineDescription_throws() {
+    InvalidInputException exception =
+        assertThrows(InvalidInputException.class, () -> Parser.parse("deadline /by 2024-02-01"));
+
+    assertEquals("I need a description for that deadline.", exception.getMessage());
+  }
+
+  @Test
+  public void parse_deadlineMissingBy_throws() {
+    InvalidInputException exception =
+        assertThrows(InvalidInputException.class, () -> Parser.parse("deadline submit report"));
+
+    assertEquals("Use `deadline <description> /by <date>`.", exception.getMessage());
+  }
+
+  @Test
   public void parse_deadlineWithRepeatedBy_throws() {
     InvalidInputException exception =
         assertThrows(
@@ -104,6 +128,25 @@ public class ParserTest {
                     "event sync /from 2024-02-01 1300 /from 2024-02-01 1400 /to 2024-02-01 1500"));
 
     assertEquals("Use one `/from` and one `/to` in an event command.", exception.getMessage());
+  }
+
+  @Test
+  public void parse_eventMissingDescription_throws() {
+    InvalidInputException exception =
+        assertThrows(
+            InvalidInputException.class,
+            () -> Parser.parse("event /from 2024-02-01 1300 /to 2024-02-01 1400"));
+
+    assertEquals("I need a description for that event.", exception.getMessage());
+  }
+
+  @Test
+  public void parse_eventMissingEnd_throws() {
+    InvalidInputException exception =
+        assertThrows(
+            InvalidInputException.class, () -> Parser.parse("event sync /from 2024-02-01 1300"));
+
+    assertEquals("Use `event <description> /from <start> /to <end>`.", exception.getMessage());
   }
 
   @Test
