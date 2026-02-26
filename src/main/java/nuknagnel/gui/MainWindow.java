@@ -29,16 +29,25 @@ public class MainWindow {
   }
 
   public void showWelcome() {
-    dialogContainer.getChildren().add(DialogBox.getBotDialog(nukNagnel.getWelcomeMessage()));
+    dialogContainer
+        .getChildren()
+        .add(DialogBox.getBotDialog(nukNagnel.getWelcomeMessage(), dialogContainer.widthProperty()));
   }
 
   @FXML
   private void handleUserInput() {
     String input = userInput.getText();
+    if (input == null || input.trim().isEmpty()) {
+      return;
+    }
     String response = nukNagnel.getResponse(input);
+    boolean isErrorResponse = isErrorResponse(response);
 
     dialogContainer.getChildren().addAll(
-        DialogBox.getUserDialog(input), DialogBox.getBotDialog(response));
+        DialogBox.getUserDialog(input, dialogContainer.widthProperty()),
+        isErrorResponse
+            ? DialogBox.getErrorDialog(response, dialogContainer.widthProperty())
+            : DialogBox.getBotDialog(response, dialogContainer.widthProperty()));
     userInput.clear();
 
     if (nukNagnel.isExit()) {
@@ -46,5 +55,14 @@ public class MainWindow {
       delay.setOnFinished(event -> Platform.exit());
       delay.play();
     }
+  }
+
+  private boolean isErrorResponse(String response) {
+    return response.startsWith("Invalid command.")
+        || response.startsWith("Please ")
+        || response.startsWith("Todo tasks")
+        || response.startsWith("Deadline tasks")
+        || response.startsWith("Event tasks")
+        || response.startsWith("Unable to ");
   }
 }

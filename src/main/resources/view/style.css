@@ -1,42 +1,72 @@
 .root {
-    -fx-font-family: "Segoe UI";
+    -fx-font-family: "Segoe UI Variable", "Segoe UI", sans-serif;
 }
 
 .main-window {
-    -fx-background-color: linear-gradient(to bottom, #f6f8fb, #eef2f7);
+    -fx-background-color: linear-gradient(to bottom, #f4f7fb, #e7edf5);
 }
 
-.scroll-pane {
+.chat-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-hbar-policy: never;
+}
+
+.chat-scroll-pane > .viewport {
     -fx-background-color: transparent;
 }
 
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
+.dialog-container {
+    -fx-padding: 2 2 6 2;
+}
+
+.input-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-padding: 8;
+    -fx-background-radius: 12;
+    -fx-border-color: #d8e0ea;
+    -fx-border-radius: 12;
 }
 
 .text-field {
     -fx-font-size: 13px;
+    -fx-text-fill: #122033;
+    -fx-prompt-text-fill: #6e7f92;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cad5e2;
+    -fx-border-radius: 10;
     -fx-background-radius: 10;
+    -fx-padding: 8 10 8 10;
+}
+
+.text-field:focused {
+    -fx-border-color: #3c7ad8;
 }
 
 .button {
-    -fx-background-color: #1f6feb;
+    -fx-background-color: #2e6fd4;
     -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
     -fx-background-radius: 10;
+    -fx-padding: 8 14 8 14;
 }
 
 .button:hover {
-    -fx-background-color: #195ec7;
+    -fx-background-color: #275fb5;
 }
 
 .dialog-box {
     -fx-padding: 0 0 2 0;
+    -fx-alignment: top-left;
 }
 
 .dialog-box .label {
-    -fx-padding: 10 12 10 12;
-    -fx-background-radius: 14;
-    -fx-font-size: 13px;
+    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 12;
+    -fx-font-size: 12.5px;
+    -fx-line-spacing: 1px;
 }
 
 .user-dialog {
@@ -44,8 +74,8 @@
 }
 
 .user-dialog .label {
-    -fx-background-color: #cce4ff;
-    -fx-text-fill: #0b2541;
+    -fx-background-color: #2f5f9e;
+    -fx-text-fill: #ffffff;
 }
 
 .bot-dialog {
@@ -54,5 +84,15 @@
 
 .bot-dialog .label {
     -fx-background-color: #ffffff;
-    -fx-text-fill: #1f2933;
+    -fx-text-fill: #1c2b39;
+    -fx-border-color: #d8e0ea;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+.error-dialog .label {
+    -fx-background-color: #ffe8e8;
+    -fx-text-fill: #8a1f1f;
+    -fx-border-color: #f0bbbb;
+    -fx-border-radius: 12;
 }

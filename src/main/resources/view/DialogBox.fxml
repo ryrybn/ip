@@ -8,10 +8,10 @@
 <fx:root type="HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
          alignment="TOP_LEFT" spacing="8" styleClass="dialog-box">
     <children>
-        <Label fx:id="dialog" wrapText="true" maxWidth="430"/>
-        <ImageView fx:id="displayPicture" fitHeight="72" fitWidth="72" preserveRatio="true"/>
+        <Label fx:id="dialog" wrapText="true"/>
+        <ImageView fx:id="displayPicture" fitHeight="30" fitWidth="30" preserveRatio="false"/>
     </children>
     <padding>
-        <Insets top="2" right="2" bottom="2" left="2"/>
+        <Insets top="1" right="0" bottom="1" left="0"/>
     </padding>
 </fx:root>
