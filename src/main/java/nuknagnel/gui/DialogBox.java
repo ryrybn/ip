@@ -45,8 +45,8 @@ public class DialogBox extends HBox {
   }
 
   public static DialogBox getBotDialog(String text, ObservableDoubleValue containerWidth) {
-    Image dukeImage = new Image(DialogBox.class.getResourceAsStream("/images/DaDuke.png"));
-    DialogBox dialogBox = new DialogBox(text, dukeImage);
+    Image botImage = new Image(DialogBox.class.getResourceAsStream("/images/DaDuke.png"));
+    DialogBox dialogBox = new DialogBox(text, botImage);
     dialogBox.flip();
     dialogBox.bindBubbleWidth(containerWidth);
     return dialogBox;

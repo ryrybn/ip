@@ -17,14 +17,16 @@ public class NukNagnel {
   public NukNagnel(String filePath) {
     assert filePath != null : "Application storage file path must not be null.";
     ui = new Ui();
-    storage = new Storage(filePath);
-    TaskList loadedTasks;
+    Storage initializedStorage;
+    TaskList loadedTasks = new TaskList();
     try {
-      loadedTasks = new TaskList(storage.load());
-    } catch (DataLoadingException e) {
+      initializedStorage = new Storage(filePath);
+      loadedTasks = new TaskList(initializedStorage.load());
+    } catch (IllegalArgumentException | DataLoadingException e) {
       ui.showLoadingError();
-      loadedTasks = new TaskList();
+      initializedStorage = null;
     }
+    storage = initializedStorage;
     tasks = loadedTasks;
     isExit = false;
   }
@@ -70,18 +72,27 @@ public class NukNagnel {
           assert command.getIndex() >= 0 : "MARK command should have a non-negative index.";
           Task toMark = tasks.get(command.getIndex());
           toMark.markAsDone();
-          storage.save(tasks);
+          String markSaveError = saveTasks();
+          if (markSaveError != null) {
+            return markSaveError;
+          }
           return "Logged. This task is now marked done:\n" + toMark;
         case UNMARK:
           assert command.getIndex() >= 0 : "UNMARK command should have a non-negative index.";
           Task toUnmark = tasks.get(command.getIndex());
           toUnmark.markAsUndone();
-          storage.save(tasks);
+          String unmarkSaveError = saveTasks();
+          if (unmarkSaveError != null) {
+            return unmarkSaveError;
+          }
           return "Noted. This task is marked not done:\n" + toUnmark;
         case DELETE:
           assert command.getIndex() >= 0 : "DELETE command should have a non-negative index.";
           Task removed = tasks.remove(command.getIndex());
-          storage.save(tasks);
+          String deleteSaveError = saveTasks();
+          if (deleteSaveError != null) {
+            return deleteSaveError;
+          }
           return "Removed this task:\n"
               + removed
               + "\nYou now have "
@@ -95,7 +106,10 @@ public class NukNagnel {
             return "That task is already on your board. No duplicate added.";
           }
           tasks.add(command.getTask());
-          storage.save(tasks);
+          String addSaveError = saveTasks();
+          if (addSaveError != null) {
+            return addSaveError;
+          }
           return "Added to your list:\n"
               + command.getTask()
               + "\nYou now have "
@@ -111,7 +125,17 @@ public class NukNagnel {
       return e.getMessage();
     } catch (IndexOutOfBoundsException e) {
       return "That task number doesn't exist. Try `list` to check.";
-    } catch (DataLoadingException e) {
+    }
+  }
+
+  private String saveTasks() {
+    if (storage == null) {
+      return "I couldn't save your tasks to disk.";
+    }
+    try {
+      storage.save(tasks);
+      return null;
+    } catch (DataLoadingException | RuntimeException e) {
       return "I couldn't save your tasks to disk.";
     }
   }
