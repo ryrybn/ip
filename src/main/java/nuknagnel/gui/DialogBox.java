@@ -38,8 +38,6 @@ public class DialogBox extends HBox {
     Image userImage = new Image(DialogBox.class.getResourceAsStream("/images/DaUser.png"));
     DialogBox dialogBox = new DialogBox(text, userImage);
     dialogBox.getStyleClass().add("user-dialog");
-    dialogBox.displayPicture.setVisible(false);
-    dialogBox.displayPicture.setManaged(false);
     dialogBox.bindBubbleWidth(containerWidth);
     return dialogBox;
   }

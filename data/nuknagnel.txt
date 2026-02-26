@@ -1,4 +1,6 @@
 T | 0 | homework
-T | 1 |  homework
-E | 0 |  class | 12pm | 2pm
-D | 0 |  project | tonight
+T | 1 | homework
+T | 0 | Prepare CS2103 iP demo
+D | 0 | Submit final report | 2026-03-03
+E | 0 | Team sync | 2026-03-03T14:00 | 2026-03-03T15:00
+T | 0 | Review parser error handling

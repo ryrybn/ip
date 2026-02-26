@@ -3,6 +3,8 @@
 NukNagnel is a desktop task chatbot for fast task tracking through typed
 commands.
 
+![NukNagnel UI](Ui.png)
+
 ## Quick Start
 
 1. Ensure Java `17` is installed.
