@@ -25,6 +25,24 @@ public class DateTimeParserTest {
   }
 
   @Test
+  public void parseDate_naturalWeekday_success() {
+    LocalDate referenceDate = LocalDate.of(2024, 2, 1); // Thursday
+
+    LocalDate date = DateTimeParser.parseDate("Mon", referenceDate);
+
+    assertEquals(LocalDate.of(2024, 2, 5), date);
+  }
+
+  @Test
+  public void parseDate_naturalWeekdaySameDay_picksNextWeek() {
+    LocalDate referenceDate = LocalDate.of(2024, 2, 5); // Monday
+
+    LocalDate date = DateTimeParser.parseDate("monday", referenceDate);
+
+    assertEquals(LocalDate.of(2024, 2, 12), date);
+  }
+
+  @Test
   public void parseDateTime_isoFormat_success() {
     LocalDateTime dateTime = DateTimeParser.parseDateTime("2024-02-01T13:45");
 
@@ -43,6 +61,24 @@ public class DateTimeParserTest {
     LocalDateTime dateTime = DateTimeParser.parseDateTime("2024-02-01 13:45");
 
     assertEquals(LocalDateTime.of(2024, 2, 1, 13, 45), dateTime);
+  }
+
+  @Test
+  public void parseDateTime_naturalWeekdayWithCompactTime_success() {
+    LocalDate referenceDate = LocalDate.of(2024, 2, 1); // Thursday
+
+    LocalDateTime dateTime = DateTimeParser.parseDateTime("Mon 1345", referenceDate);
+
+    assertEquals(LocalDateTime.of(2024, 2, 5, 13, 45), dateTime);
+  }
+
+  @Test
+  public void parseDateTime_naturalWeekdayOnly_success() {
+    LocalDate referenceDate = LocalDate.of(2024, 2, 1); // Thursday
+
+    LocalDateTime dateTime = DateTimeParser.parseDateTime("Tue", referenceDate);
+
+    assertEquals(LocalDateTime.of(2024, 2, 6, 0, 0), dateTime);
   }
 
   @Test
