@@ -43,7 +43,7 @@ public class NukNagnel {
 
   /** Returns the greeting shown when the app starts. */
   public String getWelcomeMessage() {
-    return "Good day friend! My name is NukNagnel.\nWhat can I do you for?";
+    return "Good day friend! My name is NukNagnel.\nWhat can I do for you?";
   }
 
   /** Returns true when the app has received an exit command. */
