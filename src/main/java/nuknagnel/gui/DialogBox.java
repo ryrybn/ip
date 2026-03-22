@@ -6,15 +6,18 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
 
 /** A single chat message bubble in the conversation view. */
 public class DialogBox extends HBox {
   private static final double BUBBLE_PADDING_WIDTH = 140;
+  private static final double MIN_BUBBLE_WIDTH = 240;
   private static final double MAX_BUBBLE_WIDTH = 620;
 
   @FXML private Label dialog;
@@ -63,8 +66,16 @@ public class DialogBox extends HBox {
   }
 
   private void bindBubbleWidth(ObservableDoubleValue containerWidth) {
-    dialog.maxWidthProperty().bind(
-        Bindings.min(MAX_BUBBLE_WIDTH, Bindings.subtract(containerWidth, BUBBLE_PADDING_WIDTH)));
+    var preferredBubbleWidth =
+        Bindings.max(
+            MIN_BUBBLE_WIDTH,
+            Bindings.min(MAX_BUBBLE_WIDTH, Bindings.subtract(containerWidth, BUBBLE_PADDING_WIDTH)));
+    dialog.prefWidthProperty().bind(preferredBubbleWidth);
+    dialog.maxWidthProperty().bind(preferredBubbleWidth);
+    dialog.setWrapText(true);
+    dialog.setTextOverrun(OverrunStyle.CLIP);
+    dialog.setEllipsisString("");
+    dialog.setMinHeight(Region.USE_PREF_SIZE);
   }
 
   private void styleProfilePicture() {

@@ -21,7 +21,7 @@ public class MainWindow {
 
   @FXML
   private void initialize() {
-    scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+    scrollPane.setFitToWidth(true);
   }
 
   public void setNukNagnel(NukNagnel nukNagnel) {
@@ -32,6 +32,7 @@ public class MainWindow {
     dialogContainer
         .getChildren()
         .add(DialogBox.getBotDialog(nukNagnel.getWelcomeMessage(), dialogContainer.widthProperty()));
+    scrollToBottom();
   }
 
   @FXML
@@ -49,6 +50,7 @@ public class MainWindow {
             ? DialogBox.getErrorDialog(response, dialogContainer.widthProperty())
             : DialogBox.getBotDialog(response, dialogContainer.widthProperty()));
     userInput.clear();
+    scrollToBottom();
 
     if (nukNagnel.isExit()) {
       PauseTransition delay = new PauseTransition(Duration.millis(250));
@@ -64,5 +66,9 @@ public class MainWindow {
         || response.startsWith("That task number")
         || response.startsWith("That task is already")
         || response.startsWith("The event end time");
+  }
+
+  private void scrollToBottom() {
+    Platform.runLater(() -> scrollPane.setVvalue(1.0));
   }
 }
