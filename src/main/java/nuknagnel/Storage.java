@@ -98,55 +98,67 @@ public class Storage {
     if (parts.length < 3) {
       return null;
     }
-    String type = parts[0];
     String status = parts[1];
     String description = parts[2];
-    Task task;
-    switch (type) {
-      case "T":
-        if (parts.length != 3) {
-          return null;
-        }
-        task = new ToDo(description);
-        break;
-      case "D":
-        if (parts.length != 4) {
-          return null;
-        }
-        try {
-          task = new Deadline(description, DateTimeParser.parseDate(parts[3]));
-        } catch (InvalidInputException e) {
-          return null;
-        }
-        break;
-      case "E":
-        if (parts.length != 5) {
-          return null;
-        }
-        try {
-          LocalDateTime from = DateTimeParser.parseDateTime(parts[3]);
-          LocalDateTime to = DateTimeParser.parseDateTime(parts[4]);
-          if (!to.isAfter(from)) {
-            return null;
-          }
-          task =
-              new Event(
-                  description,
-                  from,
-                  to);
-        } catch (InvalidInputException e) {
-          return null;
-        }
-        break;
-      default:
-        return null;
+    Task task = parseTaskByType(parts[0], description, parts);
+    if (task == null) {
+      return null;
     }
-    if ("1".equals(status)) {
-      task.markAsDone();
-    } else if (!"0".equals(status)) {
+    if (!applyStatus(task, status)) {
       return null;
     }
     return task;
+  }
+
+  private Task parseTaskByType(String type, String description, String[] parts) {
+    return switch (type) {
+      case "T" -> parseTodo(description, parts);
+      case "D" -> parseDeadline(description, parts);
+      case "E" -> parseEvent(description, parts);
+      default -> null;
+    };
+  }
+
+  private Task parseTodo(String description, String[] parts) {
+    if (parts.length != 3) {
+      return null;
+    }
+    return new ToDo(description);
+  }
+
+  private Task parseDeadline(String description, String[] parts) {
+    if (parts.length != 4) {
+      return null;
+    }
+    try {
+      return new Deadline(description, DateTimeParser.parseDate(parts[3]));
+    } catch (InvalidInputException e) {
+      return null;
+    }
+  }
+
+  private Task parseEvent(String description, String[] parts) {
+    if (parts.length != 5) {
+      return null;
+    }
+    try {
+      LocalDateTime from = DateTimeParser.parseDateTime(parts[3]);
+      LocalDateTime to = DateTimeParser.parseDateTime(parts[4]);
+      if (!to.isAfter(from)) {
+        return null;
+      }
+      return new Event(description, from, to);
+    } catch (InvalidInputException e) {
+      return null;
+    }
+  }
+
+  private boolean applyStatus(Task task, String status) {
+    if ("1".equals(status)) {
+      task.markAsDone();
+      return true;
+    }
+    return "0".equals(status);
   }
 
   /**
@@ -161,12 +173,10 @@ public class Storage {
     if (task instanceof ToDo) {
       return String.join(" | ", "T", status, task.getDescription());
     }
-    if (task instanceof Deadline) {
-      Deadline deadline = (Deadline) task;
+    if (task instanceof Deadline deadline) {
       return String.join(" | ", "D", status, task.getDescription(), deadline.getBy().toString());
     }
-    if (task instanceof Event) {
-      Event event = (Event) task;
+    if (task instanceof Event event) {
       return String.join(
           " | ",
           "E",

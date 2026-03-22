@@ -64,63 +64,14 @@ public class NukNagnel {
   public String getResponse(String input) {
     try {
       ParsedCommand command = Parser.parse(input);
-      assert command != null : "Parser should always return a command or throw.";
-      switch (command.getType()) {
-        case LIST:
-          return formatTaskList();
-        case MARK:
-          assert command.getIndex() >= 0 : "MARK command should have a non-negative index.";
-          Task toMark = tasks.get(command.getIndex());
-          toMark.markAsDone();
-          String markSaveError = saveTasks();
-          if (markSaveError != null) {
-            return markSaveError;
-          }
-          return "Logged. This task is now marked done:\n" + toMark;
-        case UNMARK:
-          assert command.getIndex() >= 0 : "UNMARK command should have a non-negative index.";
-          Task toUnmark = tasks.get(command.getIndex());
-          toUnmark.markAsUndone();
-          String unmarkSaveError = saveTasks();
-          if (unmarkSaveError != null) {
-            return unmarkSaveError;
-          }
-          return "Noted. This task is marked not done:\n" + toUnmark;
-        case DELETE:
-          assert command.getIndex() >= 0 : "DELETE command should have a non-negative index.";
-          Task removed = tasks.remove(command.getIndex());
-          String deleteSaveError = saveTasks();
-          if (deleteSaveError != null) {
-            return deleteSaveError;
-          }
-          return "Removed this task:\n"
-              + removed
-              + "\nYou now have "
-              + tasks.size()
-              + " tasks in the list.";
-        case TODO:
-        case DEADLINE:
-        case EVENT:
-          assert command.getTask() != null : "Task creation commands should provide a task payload.";
-          if (tasks.containsEquivalent(command.getTask())) {
-            return "That task is already on your board. No duplicate added.";
-          }
-          tasks.add(command.getTask());
-          String addSaveError = saveTasks();
-          if (addSaveError != null) {
-            return addSaveError;
-          }
-          return "Added to your list:\n"
-              + command.getTask()
-              + "\nYou now have "
-              + tasks.size()
-              + " tasks in the list.";
-        case BYE:
-          isExit = true;
-          return "Session closed. Your tasks are saved.";
-        default:
-          throw new InvalidInputException();
-      }
+      return switch (command.getType()) {
+        case LIST -> formatTaskList();
+        case MARK -> handleMark(command.getIndex());
+        case UNMARK -> handleUnmark(command.getIndex());
+        case DELETE -> handleDelete(command.getIndex());
+        case TODO, DEADLINE, EVENT -> handleAdd(command.getTask());
+        case BYE -> handleBye();
+      };
     } catch (InvalidInputException e) {
       return e.getMessage();
     } catch (IndexOutOfBoundsException e) {
@@ -138,6 +89,56 @@ public class NukNagnel {
     } catch (DataLoadingException | RuntimeException e) {
       return "I couldn't save your tasks to disk.";
     }
+  }
+
+  private String handleMark(int index) {
+    assert index >= 0 : "MARK command should have a non-negative index.";
+    Task toMark = tasks.get(index);
+    toMark.markAsDone();
+    String markSaveError = saveTasks();
+    if (markSaveError != null) {
+      return markSaveError;
+    }
+    return "Logged. This task is now marked done:\n" + toMark;
+  }
+
+  private String handleUnmark(int index) {
+    assert index >= 0 : "UNMARK command should have a non-negative index.";
+    Task toUnmark = tasks.get(index);
+    toUnmark.markAsUndone();
+    String unmarkSaveError = saveTasks();
+    if (unmarkSaveError != null) {
+      return unmarkSaveError;
+    }
+    return "Noted. This task is marked not done:\n" + toUnmark;
+  }
+
+  private String handleDelete(int index) {
+    assert index >= 0 : "DELETE command should have a non-negative index.";
+    Task removed = tasks.remove(index);
+    String deleteSaveError = saveTasks();
+    if (deleteSaveError != null) {
+      return deleteSaveError;
+    }
+    return "Removed this task:\n" + removed + "\nYou now have " + tasks.size() + " tasks in the list.";
+  }
+
+  private String handleAdd(Task task) {
+    assert task != null : "Task creation commands should provide a task payload.";
+    if (tasks.containsEquivalent(task)) {
+      return "That task is already on your board. No duplicate added.";
+    }
+    tasks.add(task);
+    String addSaveError = saveTasks();
+    if (addSaveError != null) {
+      return addSaveError;
+    }
+    return "Added to your list:\n" + task + "\nYou now have " + tasks.size() + " tasks in the list.";
+  }
+
+  private String handleBye() {
+    isExit = true;
+    return "Session closed. Your tasks are saved.";
   }
 
   private String formatTaskList() {

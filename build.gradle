@@ -1,24 +1,27 @@
 plugins {
     id 'java'
     id 'application'
+    id 'jacoco'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
+
+def javafxVersion = '21.0.6'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'org.openjfx:javafx-controls:17.0.8'
-    implementation 'org.openjfx:javafx-fxml:17.0.8'
+    implementation "org.openjfx:javafx-controls:${javafxVersion}"
+    implementation "org.openjfx:javafx-fxml:${javafxVersion}"
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
 }
 
 javafx {
-    version = "17.0.8"
+    version = javafxVersion
     modules = ['javafx.controls', 'javafx.fxml']
 }
 
@@ -33,6 +36,14 @@ test {
         showCauses true
         showStackTraces true
         showStandardStreams = false
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
     }
 }
 
